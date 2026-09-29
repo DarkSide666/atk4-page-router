@@ -1,0 +1,60 @@
+{
+    "name": "atk4/page-router",
+    "description": "ATK4 Page Router",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "agile",
+        "page",
+        "route",
+        "routing",
+        "framework"
+    ],
+    "version": "dev-develop",
+    "authors": [
+        {
+            "name": "Imants Horsts",
+            "homepage": "https://darkside.lv/"
+        }
+    ],
+    "homepage": "https://github.com/DarkSide666/atk4-page-router",
+    "require": {
+        "php": ">=7.4 <8.4",
+        "ext-json": "*",
+        "atk4/ui": "dev-develop"
+    },
+    "require-release": {
+        "php": ">=7.4 <8.4",
+        "atk4/data": "~6.0.0",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.13",
+        "ergebnis/phpunit-slow-test-detector": "^2.9",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^9.5.5 || ^10.0 || ^11.0 || ^12.0 || ^13.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Atk4\\PageRouter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Atk4\\PageRouter\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true
+        },
+        "sort-packages": true
+    }
+}
