@@ -60,6 +60,7 @@ return (new Config())
         'use_arrow_functions' => false,
 
         'single_line_comment_style' => false,
+        'global_namespace_import' => false,
     ])
     ->setFinder($finder)
     ->setCacheFile(sys_get_temp_dir() . '/php-cs-fixer.' . md5(__DIR__) . '.cache');
