@@ -17,7 +17,7 @@ final class Router
     /** @var AccessCheckerInterface|null */
     private $accessChecker;
 
-    public function __construct(AccessCheckerInterface $accessChecker = null)
+    public function __construct(?AccessCheckerInterface $accessChecker = null)
     {
         $this->accessChecker = $accessChecker;
     }
@@ -49,7 +49,7 @@ final class Router
     public function dispatch(App $app): Page
     {
         $path = $this->normalizePath($app->getRequest()->getUri()->getPath());
-        $route = isset($this->routes[$path]) ? $this->routes[$path] : null;
+        $route = $this->routes[$path] ?? null;
 
         if ($route === null) {
             throw new RouteNotFoundException($path);
