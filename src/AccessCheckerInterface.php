@@ -9,7 +9,7 @@ use Atk4\Ui\App;
 interface AccessCheckerInterface
 {
     /**
-     * @param class-string<Page> $pageClass
+     * Check whether the current user has the given permission.
      */
-    public function canAccess(string $pageClass, App $app): bool;
+    public function hasPermission(string $permission, App $app): bool;
 }

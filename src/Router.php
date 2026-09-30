@@ -11,8 +11,11 @@ use LogicException;
 
 final class Router
 {
-    /** @var array<string, Route> */
+    /** @var array<string, Route> Exact routes keyed by normalized path. */
     private $routes = [];
+
+    /** @var list<Route> Parameterized routes in registration order. */
+    private $parameterizedRoutes = [];
 
     /** @var AccessCheckerInterface|null */
     private $accessChecker;
@@ -25,17 +28,32 @@ final class Router
     /**
      * Register a page route.
      *
+     * Exact routes are matched before parameterized routes.
+     *
      * @param class-string<Page> $pageClass
      */
     public function add(string $path, string $pageClass): self
     {
-        $route = new Route($this->normalizePath($path), $pageClass);
+        $normalizedPath = $this->normalizePath($path);
+        $route = new Route($normalizedPath, $pageClass);
 
-        if (isset($this->routes[$route->path])) {
-            throw new LogicException(sprintf('Route "%s" is already registered.', $route->path));
+        if (!$route->isParameterized()) {
+            if (isset($this->routes[$route->path])) {
+                throw new LogicException(sprintf('Route "%s" is already registered.', $route->path));
+            }
+
+            $this->routes[$route->path] = $route;
+
+            return $this;
         }
 
-        $this->routes[$route->path] = $route;
+        foreach ($this->parameterizedRoutes as $existingRoute) {
+            if ($existingRoute->path === $route->path) {
+                throw new LogicException(sprintf('Route "%s" is already registered.', $route->path));
+            }
+        }
+
+        $this->parameterizedRoutes[] = $route;
 
         return $this;
     }
@@ -49,18 +67,34 @@ final class Router
     public function dispatch(App $app): Page
     {
         $path = $this->normalizePath($app->getRequest()->getUri()->getPath());
-        $route = $this->routes[$path] ?? null;
+        [$route, $routeParams] = $this->findRoute($path);
 
         if ($route === null) {
             throw new RouteNotFoundException($path);
         }
 
-        if ($this->accessChecker !== null && !$this->accessChecker->canAccess($route->pageClass, $app)) {
-            throw new AccessDeniedException($route->pageClass);
+        $permissions = $route->pageClass::getRequiredPermission();
+        if ($permissions !== []) {
+            $allowed = false;
+
+            if ($this->accessChecker !== null) {
+                foreach ($permissions as $permission) {
+                    if ($this->accessChecker->hasPermission($permission, $app)) {
+                        $allowed = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$allowed) {
+                throw new AccessDeniedException($route->pageClass);
+            }
         }
 
         /** @var Page $page */
-        $page = $route->pageClass::addTo($app);
+        $page = $route->pageClass::addTo($app, [
+            'routeParams' => $routeParams,
+        ]);
 
         return $page;
     }
@@ -70,7 +104,27 @@ final class Router
      */
     public function getRoutes(): array
     {
-        return array_values($this->routes);
+        return array_merge(array_values($this->routes), $this->parameterizedRoutes);
+    }
+
+    /**
+     * @return array{0: Route|null, 1: array<string, string>}
+     */
+    private function findRoute(string $path): array
+    {
+        $route = $this->routes[$path] ?? null;
+        if ($route !== null) {
+            return [$route, []];
+        }
+
+        foreach ($this->parameterizedRoutes as $route) {
+            $params = $route->match($path);
+            if ($params !== null) {
+                return [$route, $params];
+            }
+        }
+
+        return [null, []];
     }
 
     private function normalizePath(string $path): string
