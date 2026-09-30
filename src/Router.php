@@ -20,9 +20,37 @@ final class Router
     /** @var AccessCheckerInterface|null */
     private $accessChecker;
 
-    public function __construct(?AccessCheckerInterface $accessChecker = null)
+    /** @var string Base URL path under which the application is mounted. */
+    private $baseRoot = '/';
+
+    public function __construct(?AccessCheckerInterface $accessChecker = null, string $baseRoot = '/')
     {
         $this->accessChecker = $accessChecker;
+        $this->setBaseRoot($baseRoot);
+    }
+
+    /**
+     * Set the URL path under which the application is mounted.
+     *
+     * For example, when the application is available at
+     * http://localhost/DarkSide666/atk4-page-router/demos/, use:
+     * /DarkSide666/atk4-page-router/demos
+     *
+     * @return $this
+     */
+    public function setBaseRoot(string $baseRoot): self
+    {
+        $this->baseRoot = $this->normalizePath($baseRoot);
+
+        return $this;
+    }
+
+    /**
+     * Return the configured application mount path.
+     */
+    public function getBaseRoot(): string
+    {
+        return $this->baseRoot;
     }
 
     /**
@@ -66,7 +94,13 @@ final class Router
      */
     public function dispatch(App $app): Page
     {
-        $path = $this->normalizePath($app->getRequest()->getUri()->getPath());
+        $requestPath = $this->normalizePath($app->getRequest()->getUri()->getPath());
+        $path = $this->stripBaseRoot($requestPath);
+
+        if ($path === null) {
+            throw new RouteNotFoundException($requestPath);
+        }
+
         [$route, $routeParams] = $this->findRoute($path);
 
         if ($route === null) {
@@ -117,14 +151,37 @@ final class Router
             return [$route, []];
         }
 
-        foreach ($this->parameterizedRoutes as $route) {
-            $params = $route->match($path);
+        foreach ($this->parameterizedRoutes as $candidateRoute) {
+            $params = $candidateRoute->match($path);
             if ($params !== null) {
-                return [$route, $params];
+                return [$candidateRoute, $params];
             }
         }
 
         return [null, []];
+    }
+
+    /**
+     * Convert the full request path into a path relative to the configured base root.
+     *
+     * @return string|null null if the request is outside the configured base root.
+     */
+    private function stripBaseRoot(string $path): ?string
+    {
+        if ($this->baseRoot === '/') {
+            return $path;
+        }
+
+        if ($path === $this->baseRoot) {
+            return '/';
+        }
+
+        $prefix = $this->baseRoot . '/';
+        if (strpos($path, $prefix) === 0) {
+            return $this->normalizePath(substr($path, strlen($this->baseRoot)));
+        }
+
+        return null;
     }
 
     private function normalizePath(string $path): string

@@ -21,7 +21,7 @@ final class Route
     private $parameterNames;
 
     /**
-     * @param class-string<Page> $pageClass
+     * @param string $pageClass
      */
     public function __construct(string $path, string $pageClass)
     {
@@ -38,6 +38,7 @@ final class Route
         }
 
         $this->path = $path;
+        /** @var class-string<Page> $pageClass */
         $this->pageClass = $pageClass;
 
         [$this->pattern, $this->parameterNames] = $this->compilePath($path);
