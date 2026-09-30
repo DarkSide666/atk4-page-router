@@ -12,7 +12,6 @@ use Atk4\PageRouter\Router;
 use Atk4\Ui\App;
 use Atk4\Ui\Button;
 use Atk4\Ui\Header;
-use Atk4\Ui\Label;
 use Atk4\Ui\Layout;
 use Atk4\Ui\Message;
 
@@ -75,9 +74,7 @@ final class HomePage extends Page
     {
         Header::addTo($this, ['Page Router demo', 'size' => 1]);
 
-        Header::addTo($this, [
-            'This page is public. Try the routes below and change the role in the URL.',
-        ]);
+        Header::addTo($this, ['This page is public. Try the routes below and change the role in the URL.', 'size' => 3]);
 
         Button::addTo($this, ['Open users'])->on(
             'click',
@@ -104,12 +101,17 @@ final class HomePage extends Page
             'content' => 'The last button is a server-side ATK callback. The page router still routes the request by path; ATK handles the callback parameters.',
         ]);
 
-        Label::addTo($this, ['Roles: viewer, editor, admin.']);
+        Header::addTo($this, ['Roles: viewer, editor, admin.', 'size' => 3]);
     }
 }
 
 final class UsersPage extends Page
 {
+    public static function getLayout(): array
+    {
+        return [Layout\Admin::class];
+    }
+
     public static function getRequiredPermission(): array
     {
         return ['users.view'];
@@ -118,7 +120,7 @@ final class UsersPage extends Page
     protected function build(): void
     {
         Header::addTo($this, ['Users', 'size' => 1]);
-        Header::addTo($this, ['You have the users.view permission.']);
+        Header::addTo($this, ['You have the users.view permission.', 'size' => 3]);
 
         Button::addTo($this, ['Edit user #42 as editor'])->on(
             'click',
@@ -150,7 +152,7 @@ final class UserEditPage extends Page
         $id = $this->getRouteParam('id');
 
         Header::addTo($this, ['Edit user #' . $id, 'size' => 1]);
-        Header::addTo($this, ['The {id} route parameter was captured from /users/' . $id . '/edit.']);
+        Header::addTo($this, ['The {id} route parameter was captured from /users/' . $id . '/edit.', 'size' => 3]);
 
         Button::addTo($this, ['Back to users'])->on(
             'click',
@@ -161,7 +163,6 @@ final class UserEditPage extends Page
 
 $app = new DemoApp();
 $app->title = 'ATK4 Page Router Demo';
-$app->initLayout([Layout\Centered::class]);
 
 $router = new Router(new DemoAccessChecker());
 $router->setBaseRoot('/DarkSide666/atk4-page-router/demos');

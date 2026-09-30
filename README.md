@@ -55,6 +55,20 @@ $app->run();
 
 `Router` matches the request URI path. Query parameters are not used for application routing, so ATK4 callback parameters continue to be handled by ATK4 UI.
 
+Each page declares its ATK4 UI layout with static `getLayout()`. The router initializes that layout before adding the page to the app.
+
+```php
+final class LoginPage extends Page
+{
+    public static function getLayout(): array
+    {
+        return [\Atk4\Ui\Layout\Centered::class];
+    }
+
+    // ...
+}
+```
+
 ## URL generation
 
 The router does not provide a second URL-generation API. Use ATK4's existing `$app->url()` and `$app->jsUrl()` throughout the application.

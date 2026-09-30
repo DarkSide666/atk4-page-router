@@ -61,6 +61,30 @@ Routes accept an optional trailing slash. `/users` and `/users/` match the same 
 
 If no registered route matches the request, `dispatch()` throws `RouteNotFoundException`.
 
+## Page layouts
+
+Each page declares its ATK4 UI layout through the static `getLayout()` method. The router resolves the page class first, initializes that layout on the app, and only then adds the page.
+
+The default layout is centered:
+
+```php
+public static function getLayout(): array
+{
+    return [Layout\Centered::class];
+}
+```
+
+A page can override it:
+
+```php
+public static function getLayout(): array
+{
+    return [Layout\Admin::class];
+}
+```
+
+This keeps layout configuration with the page instead of the route.
+
 ## Base root
 
 When the application is mounted below the web-server root, configure the router with that mount path:

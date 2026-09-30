@@ -24,6 +24,16 @@ final class RouterExactPage extends Page
     protected function build(): void {}
 }
 
+final class RouterAdminPage extends Page
+{
+    public static function getLayout(): array
+    {
+        return [Layout\Admin::class];
+    }
+
+    protected function build(): void {}
+}
+
 final class RouterUserPage extends Page
 {
     protected function build(): void {}
@@ -73,6 +83,17 @@ class RouterTest extends TestCase
         self::assertInstanceOf(RouterPublicPage::class, $page);
         self::assertSame(['id' => '123'], $page->getRouteParams());
         self::assertSame('123', $page->getRouteParam('id'));
+    }
+
+    public function testPageLayoutIsInitializedByRouter(): void
+    {
+        $router = new Router();
+        $router->add('/admin', RouterAdminPage::class);
+        $app = $this->createApp('/admin');
+
+        $router->dispatch($app);
+
+        self::assertInstanceOf(Layout\Admin::class, $app->layout);
     }
 
     public function testExactRouteTakesPrecedence(): void
@@ -172,11 +193,6 @@ class RouterTest extends TestCase
             'alwaysRun' => false,
             'request' => $request,
         ]);
-        // Keep router tests lightweight. App::initLayout() also initializes
-        // ATK's JS/CSS includes, which is unnecessary for routing tests.
-        $app->layout = new Layout();
-        $app->layout->setApp($app);
-
         return $app;
     }
 }

@@ -125,6 +125,8 @@ final class Router
             }
         }
 
+        $app->initLayout($route->pageClass::getLayout());
+
         /** @var Page $page */
         $page = $route->pageClass::addTo($app, [
             'routeParams' => $routeParams,

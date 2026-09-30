@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atk4\PageRouter;
 
+use Atk4\Ui\Layout;
 use Atk4\Ui\ViewWithContent;
 use InvalidArgumentException;
 use OutOfBoundsException;
@@ -32,6 +33,16 @@ abstract class Page extends ViewWithContent
     public static function getRequiredPermission(): array
     {
         return [];
+    }
+
+    /**
+     * Returns the ATK4 UI layout seed used for this page.
+     *
+     * @return array<mixed>
+     */
+    public static function getLayout(): array
+    {
+        return [Layout\Centered::class];
     }
 
     /**
