@@ -75,7 +75,7 @@ final class HomePage extends Page
     {
         Header::addTo($this, ['Page Router demo', 'size' => 1]);
 
-        Label::addTo($this, [
+        Header::addTo($this, [
             'This page is public. Try the routes below and change the role in the URL.',
         ]);
 
@@ -118,7 +118,7 @@ final class UsersPage extends Page
     protected function build(): void
     {
         Header::addTo($this, ['Users', 'size' => 1]);
-        Label::addTo($this, ['You have the users.view permission.']);
+        Header::addTo($this, ['You have the users.view permission.']);
 
         Button::addTo($this, ['Edit user #42 as editor'])->on(
             'click',
@@ -150,7 +150,7 @@ final class UserEditPage extends Page
         $id = $this->getRouteParam('id');
 
         Header::addTo($this, ['Edit user #' . $id, 'size' => 1]);
-        Label::addTo($this, ['The {id} route parameter was captured from /users/' . $id . '/edit.']);
+        Header::addTo($this, ['The {id} route parameter was captured from /users/' . $id . '/edit.']);
 
         Button::addTo($this, ['Back to users'])->on(
             'click',
