@@ -193,6 +193,7 @@ class RouterTest extends TestCase
             'alwaysRun' => false,
             'request' => $request,
         ]);
+
         return $app;
     }
 }
