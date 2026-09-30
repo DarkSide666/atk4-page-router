@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Atk4\PageRouter;
 
 use InvalidArgumentException;
+use ReflectionClass;
+use ReflectionException;
 
 final class Route
 {
@@ -26,7 +28,16 @@ final class Route
             throw new InvalidArgumentException('Route path must start with /.');
         }
 
-        if (!is_a($pageClass, Page::class, true)) {
+        try {
+            $page = (new ReflectionClass($pageClass))->newInstanceWithoutConstructor();
+        } catch (ReflectionException $e) {
+            throw new InvalidArgumentException(sprintf(
+                'Route page class %s does not exist or cannot be reflected.',
+                $pageClass,
+            ), 0, $e);
+        }
+
+        if (!$page instanceof Page) {
             throw new InvalidArgumentException(sprintf(
                 'Route page class %s must extend %s.',
                 $pageClass,
