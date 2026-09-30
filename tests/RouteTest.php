@@ -18,16 +18,14 @@ final class RouteTestPage extends Page
 
 class RouteTest extends TestCase
 {
-    /**
-     * @dataProvider provideMatchCases
-     *
-     * @param array<string, string>|null $expected
-     */
-    public function testMatch(string $routePath, string $requestPath, ?array $expected): void
+    public function testMatch(): void
     {
-        $route = new Route($routePath, RouteTestPage::class);
+        foreach (self::provideMatchCases() as $case) {
+            [$routePath, $requestPath, $expected] = $case;
+            $route = new Route($routePath, RouteTestPage::class);
 
-        self::assertSame($expected, $route->match($requestPath));
+            self::assertSame($expected, $route->match($requestPath));
+        }
     }
 
     /**
