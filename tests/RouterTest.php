@@ -16,23 +16,17 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 
 final class RouterPublicPage extends Page
 {
-    protected function build(): void
-    {
-    }
+    protected function build(): void {}
 }
 
 final class RouterExactPage extends Page
 {
-    protected function build(): void
-    {
-    }
+    protected function build(): void {}
 }
 
 final class RouterUserPage extends Page
 {
-    protected function build(): void
-    {
-    }
+    protected function build(): void {}
 
     public static function getRequiredPermission(): array
     {
@@ -170,9 +164,6 @@ class RouterTest extends TestCase
         self::assertSame([], $checker->checkedPermissions);
     }
 
-    /**
-     * @return App
-     */
     private function createApp(string $uri): App
     {
         $request = (new Psr17Factory())->createServerRequest('GET', $uri);

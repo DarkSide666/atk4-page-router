@@ -11,9 +11,7 @@ use InvalidArgumentException;
 
 final class RouteTestPage extends Page
 {
-    protected function build(): void
-    {
-    }
+    protected function build(): void {}
 }
 
 class RouteTest extends TestCase

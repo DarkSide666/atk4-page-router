@@ -12,8 +12,8 @@ use Atk4\PageRouter\Router;
 use Atk4\Ui\App;
 use Atk4\Ui\Button;
 use Atk4\Ui\Header;
-use Atk4\Ui\Layout;
 use Atk4\Ui\Label;
+use Atk4\Ui\Layout;
 use Atk4\Ui\Message;
 
 /**
@@ -41,7 +41,7 @@ final class DemoApp extends App
 
     private function getDemoBaseRoot(): string
     {
-        $scriptName = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '/index.php';
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
         $baseRoot = dirname(str_replace('\\', '/', $scriptName));
 
         return $baseRoot === '.' ? '/' : rtrim($baseRoot, '/');

@@ -20,9 +20,6 @@ final class Route
     /** @var list<string> */
     private $parameterNames;
 
-    /**
-     * @param string $pageClass
-     */
     public function __construct(string $path, string $pageClass)
     {
         if ($path === '' || $path[0] !== '/') {
@@ -38,7 +35,7 @@ final class Route
         }
 
         $this->path = $path;
-        /** @var class-string<Page> $pageClass */
+        /* @var class-string<Page> $pageClass */
         $this->pageClass = $pageClass;
 
         [$this->pattern, $this->parameterNames] = $this->compilePath($path);
@@ -76,7 +73,7 @@ final class Route
      */
     private function compilePath(string $path): array
     {
-        $parts = preg_split('/(\{[A-Za-z_][A-Za-z0-9_]*\})/', $path, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $parts = preg_split('/(\{[A-Za-z_][A-Za-z0-9_]*\})/', $path, -1, \PREG_SPLIT_DELIM_CAPTURE);
         if ($parts === false) {
             throw new InvalidArgumentException(sprintf('Unable to parse route path "%s".', $path));
         }

@@ -46,8 +46,6 @@ abstract class Page extends ViewWithContent
 
     /**
      * Returns a single route parameter.
-     *
-     * @throws OutOfBoundsException if the parameter does not exist.
      */
     public function getRouteParam(string $name): string
     {

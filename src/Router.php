@@ -164,7 +164,7 @@ final class Router
     /**
      * Convert the full request path into a path relative to the configured base root.
      *
-     * @return string|null null if the request is outside the configured base root.
+     * @return string|null null if the request is outside the configured base root
      */
     private function stripBaseRoot(string $path): ?string
     {
